@@ -1,0 +1,15 @@
+Laboratorio,1,8-10,segunda,3
+Laboratorio,2,10-12,sexta,1
+Laboratorio,3,8-10,segunda,1
+Laboratorio,4,13-15,terca,2
+Laboratorio,5,15-17,quarta,1
+Monitor,Marcos,8-10,segunda
+Monitor,Pedro,10-12,quinta
+
+1={Marcos,Pedro}
+2={Pedro}
+3={Marcos,Pedro}
+4={Pedro}
+5={Marcos}
+
+
