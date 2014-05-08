@@ -18,3 +18,16 @@ class Restricao:
 
 	def pertenceEscopo(self, variavel):
 		return variavel in self.escopo
+
+	'''
+	params: args lista de argumentos para serem passados
+	para a funcaorestricao depois de serem ordenados
+	
+	return: lista de argumentos devidamente ordenados
+	'''
+	def _ordenaArgumentos(self, args):
+		return sorted(args, key=ValorDominio.getOrdem)
+
+	def chamafuncaorestricao(self, args):
+		self._ordenaArgumentos(args)
+		return self.funcaorestricao(*args)
