@@ -27,4 +27,12 @@ def GAC(TDA, variavelDominioDict, restricoes):
 		TDA.remove(arco)
 		variavel = arco[0]
 		dominio = variavelDominioDict[variavel]
-		novoDominio = [for valor in dominio]
+		restricao = arco[1]
+		novoDominio = []
+		if len(restricao.escopo) == 1: #restricao unaria
+			novoDominio = [ valorDominio for valorDominio in dominio if restricao.funcaorestricao(valorDominio)]
+		elif len(restricao.escopo) == 2: #restricao binaria
+			outraVariavel = [ variavel for variavel in restricao.escopo if variavel != variavel ][0] #pega a outra variavel do escopo
+			outroDominio = variavelDominioDict[outraVariavel]
+			novoDominio = [ valorDominio for valorDominio in dominio for valorOutroDominio in outroDominio if restricao.chamafuncaorestricao([valorDominio, valorOutroDominio])]
+		
