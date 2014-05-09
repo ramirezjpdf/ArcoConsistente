@@ -22,7 +22,7 @@ class Restricao:
 	'''
 	params: args lista de argumentos para serem passados
 	para a funcaorestricao depois de serem ordenados
-	
+
 	return: lista de argumentos devidamente ordenados
 	'''
 	def _ordenaArgumentos(self, args):
@@ -31,3 +31,9 @@ class Restricao:
 	def chamafuncaorestricao(self, args):
 		self._ordenaArgumentos(args)
 		return self.funcaorestricao(*args)
+
+	def __eq__(self, other):
+		return self.funcaorestricao == other.funcaorestricao
+
+	def __hash__(self):
+		return hash(str(self))
