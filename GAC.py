@@ -21,7 +21,8 @@ param:
 ->variavelDominioDict: dicionario com a variavel(objeto da classe Variavel) como chave e com
 o dominio(lista de objetos da classe ValorDominio) como valor, e.g. {Var1 : [ValorDom1, ValorDom2, ValorDom3], Var2:[ValorDom4, ValorDom5, ValorDom6]}
 ->restricoes: lista com as restricoes(objetos da classe Restricao)
-param 
+
+return: variavelDominioDict retornada por referencia 
 '''
 def GAC(TDA, variavelDominioDict, restricoes):
 	arcosUsados = []
@@ -45,5 +46,3 @@ def GAC(TDA, variavelDominioDict, restricoes):
 			arcosUsados = [ arcoUsado for arcoUsado in arcosUsados if arcoUsado not in arcosVoltantes ]#remove os arcos voltantes dos arcosUsados
 		arcosUsados.append(arco)
 		variavelDominioDict[variavel] = novoDominio
-
-	return variavelDominioDict
