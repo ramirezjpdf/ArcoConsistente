@@ -24,6 +24,7 @@ o dominio(lista de objetos da classe ValorDominio) como valor, e.g. {Var1 : [Val
 param 
 '''
 def GAC(TDA, variavelDominioDict, restricoes):
+	arcosUsados = []
 	while len(TDA) != 0:
 		arco = TDA.pop()
 		TDA.remove(arco)
@@ -37,4 +38,12 @@ def GAC(TDA, variavelDominioDict, restricoes):
 			outraVariavel = [ variavel for variavel in restricao.escopo if variavel != variavel ][0] #pega a outra variavel do escopo
 			outroDominio = variavelDominioDict[outraVariavel]
 			novoDominio = [ valorDominio for valorDominio in dominio for valorOutroDominio in outroDominio if restricao.chamafuncaorestricao([valorDominio, valorOutroDominio]) ]
-		
+
+		if novoDominio != dominio:
+			arcosVoltantes = [ arcoUsado for arcoUsado in arcosUsados if arcoUsado[1].pertenceEscopo(variavel) and arcoUsado[1] != restricao and arcoUsado[0] != variavel ]
+			TDA.extend(arcosVoltantes)
+			arcosUsados = [ arcoUsado for arcoUsado in arcosUsados if arcoUsado not in arcosVoltantes ]#remove os arcos voltantes dos arcosUsados
+		arcosUsados.append(arco)
+		variavelDominioDict[variavel] = novoDominio
+
+	return variavelDominioDict
