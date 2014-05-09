@@ -28,7 +28,6 @@ def GAC(TDA):
 	arcosUsados = []
 	while len(TDA) != 0:
 		arco = TDA.pop()
-		TDA.remove(arco)
 		variavel = arco[0]
 		dominio = variavel.dominio
 		restricao = arco[1]
