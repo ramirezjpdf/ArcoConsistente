@@ -1,8 +1,12 @@
 class Variavel(object):
-	def __init__(self, ordem, dominio, **kwargs):
+	def __init__(self, ordem, **kwargs):
 		self.ordem = ordem
-		self.dominio = dominio
+		self.dominio = []
 		self.__dict__.update(kwargs)
+
+
+	def adicionaValor(self, valorDominio):
+		self.dominio.append(valorDominio)
 
 	def __eq__(self, other):
 		selfAux = dict(self.__dict__)
