@@ -19,3 +19,14 @@ class Variavel(object):
 		selfAux = dict(self.__dict__)
 		del selfAux['dominio']
 		return hash(str(selfAux))
+
+	def __str__(self):
+		aux = dict(self.__dict__)
+		del aux['dominio']
+		ret = ''
+		for key, value in aux.iteritems():
+			ret += key + ' = ' + str(value) + ', '
+		return ret[:-2]
+
+	def __repr__(self):
+		return self.__str__()

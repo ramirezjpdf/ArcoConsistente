@@ -38,3 +38,9 @@ class Restricao:
 
 	def __hash__(self):
 		return hash(str(self))
+
+	def __str__(self):
+		return self.funcaorestricao.__name__
+
+	def __repr__(self):
+		return self.__str__()

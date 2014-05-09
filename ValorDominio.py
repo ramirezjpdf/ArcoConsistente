@@ -11,7 +11,7 @@ class ValorDominio(object):
 		aux = dict(self.__dict__)
 		del aux['variavel']
 		for key, value in aux.iteritems():
-			ret += str(value) + ', '
+			ret += key + ' = ' + str(value) + ', '
 		return ret[:-2]
 
 	def __repr__(self):
