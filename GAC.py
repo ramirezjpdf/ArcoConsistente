@@ -36,7 +36,7 @@ def GAC(TDA):
 		if len(restricao.escopo) == 1: #restricao unaria
 			novoDominio = [ valorDominio for valorDominio in dominio if restricao.funcaorestricao(valorDominio)]
 		elif len(restricao.escopo) == 2: #restricao binaria
-			outraVariavel = [ variavel for variavel in restricao.escopo if variavel != variavel ][0] #pega a outra variavel do escopo
+			outraVariavel = [ variavel for variavelEscopo in restricao.escopo if variavelEscopo != variavel ][0] #pega a outra variavel do escopo
 			outroDominio = outraVariavel.dominio
 			novoDominio = [ valorDominio for valorDominio in dominio for valorOutroDominio in outroDominio if restricao.chamafuncaorestricao([valorDominio, valorOutroDominio]) ]
 

@@ -32,3 +32,6 @@ restricaoAmenorB = Restricao([A, B], funcRestricaoAmenorB)
 
 TDA = geraTDA([A, B], [restricaoAmenorB])
 variaveisNovosDominios = GAC(TDA)
+
+for var in variaveisNovosDominios:
+	print var.dominio

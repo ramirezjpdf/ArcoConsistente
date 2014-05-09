@@ -1,3 +1,4 @@
+from ValorDominio import *
 '''
 Classe que representa uma restricao
 
