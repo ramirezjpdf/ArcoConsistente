@@ -1,7 +1,7 @@
 from Restricao import *
 from ValorDominio import *
 from Variavel import *
-from GACDebug import *
+from GAC import *
 
 A = Variavel(1, **dict(nome='A'))
 A1 = ValorDominio(A, **dict(valor=1))
@@ -26,7 +26,13 @@ B.adicionaValor(B3)
 B.adicionaValor(B4)
 
 def funcRestricaoAmenorB(valorDominioA, valorDominioB):
-	return valorDominioA < valorDominioB
+	print 'Funcao de Restricao'
+	print ''
+	print 'Variavel de valorDominioA: ' + str(valorDominioA.variavel)
+	print 'Variavel de valorDominioB: ' + str(valorDominioB.variavel)
+	print 'valorDominioA.valor < valorDominioB.valor ? ' + str(valorDominioA.valor < valorDominioB.valor)
+	print 'para valorDominioA.valor = ' + str(valorDominioA.valor) + ' e valorDominioB.valor = ' +  str(valorDominioB.valor)
+	return valorDominioA.valor < valorDominioB.valor
 
 restricaoAmenorB = Restricao([A, B], funcRestricaoAmenorB)
 
@@ -66,6 +72,7 @@ print 'GAC'
 print ''
 variaveisNovosDominios = GAC(TDA)
 
+print ''
 print 'Dominios Finais'
 for var in variaveisNovosDominios:
 	print 'Dominio de ' + str(var)
