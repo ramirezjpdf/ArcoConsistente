@@ -30,7 +30,7 @@ class Restricao:
 		return sorted(args, key=ValorDominio.getOrdem)
 
 	def chamafuncaorestricao(self, args):
-		self._ordenaArgumentos(args)
+		args = self._ordenaArgumentos(args)
 		return self.funcaorestricao(*args)
 
 	def __eq__(self, other):
