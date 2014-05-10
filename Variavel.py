@@ -5,8 +5,8 @@ class Variavel(object):
 		self.__dict__.update(kwargs)
 
 
-	def adicionaValor(self, valorDominio):
-		self.dominio.append(valorDominio)
+	def adicionaElemento(self, elementoDominio):
+		self.dominio.append(elementoDominio)
 
 	def __eq__(self, other):
 		selfAux = dict(self.__dict__)

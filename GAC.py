@@ -1,5 +1,5 @@
 from Restricao import *
-from ValorDominio import *
+from ElementoDominio import *
 from Variavel import *
 
 '''
@@ -19,7 +19,7 @@ def geraTDA(variaveis, restricoes):
 param:
 ->TDA: TDA obtido por geraTDA
 ->variavelDominioDict: dicionario com a variavel(objeto da classe Variavel) como chave e com
-o dominio(lista de objetos da classe ValorDominio) como valor, e.g. {Var1 : [ValorDom1, ValorDom2, ValorDom3], Var2:[ValorDom4, ValorDom5, ValorDom6]}
+o dominio(lista de objetos da classe ElementoDominio) como valor, e.g. {Var1 : [ValorDom1, ValorDom2, ValorDom3], Var2:[ValorDom4, ValorDom5, ValorDom6]}
 ->restricoes: lista com as restricoes(objetos da classe Restricao)
 
 return: lista de variaveis com novos dominios 
@@ -33,14 +33,14 @@ def GAC(TDA):
 		restricao = arco[1]
 		novoDominio = []
 		if len(restricao.escopo) == 1: #restricao unaria
-			novoDominio = [ valorDominio for valorDominio in dominio if restricao.funcaorestricao(valorDominio)]
+			novoDominio = [ elementoDominio for elementoDominio in dominio if restricao.funcaorestricao(elementoDominio)]
 		elif len(restricao.escopo) == 2: #restricao binaria
 			outraVariavel = [ variavelEscopo for variavelEscopo in restricao.escopo if variavelEscopo != variavel ][0] #pega a outra variavel do escopo
 			outroDominio = outraVariavel.dominio
-			for valorDominio in dominio:
-				for valorOutroDominio in outroDominio:
-					if restricao.chamafuncaorestricao([valorDominio, valorOutroDominio]):
-						novoDominio.append(valorDominio)
+			for elementoDominio in dominio:
+				for elementoOutroDominio in outroDominio:
+					if restricao.chamafuncaorestricao([elementoDominio, elementoOutroDominio]):
+						novoDominio.append(elementoDominio)
 						break
 
 		if novoDominio != dominio:
