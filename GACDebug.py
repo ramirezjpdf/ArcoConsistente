@@ -1,5 +1,5 @@
 from Restricao import *
-from ValorDominio import *
+from ElementoDominio import *
 from Variavel import *
 
 '''
@@ -8,24 +8,24 @@ param:
 ->restricoes: lista com as restricoes(objetos da classe Restricao)
 param 
 
-return TDA: lista de tuplas com variavel(objeto da classe Variavel) e restricao(objeto da classe
+return TDA: conjunto de tuplas com variavel(objeto da classe Variavel) e restricao(objeto da classe
 Restricao)
 '''
 def geraTDA(variaveis, restricoes):
-	return [(variavel, restricao) for variavel in variaveis for restricao in restricoes if restricao.pertenceEscopo(variavel)]
+	return {(variavel, restricao) for variavel in variaveis for restricao in restricoes if restricao.pertenceEscopo(variavel)}
 
 
 '''
 param:
 ->TDA: TDA obtido por geraTDA
 ->variavelDominioDict: dicionario com a variavel(objeto da classe Variavel) como chave e com
-o dominio(lista de objetos da classe ValorDominio) como valor, e.g. {Var1 : [ValorDom1, ValorDom2, ValorDom3], Var2:[ValorDom4, ValorDom5, ValorDom6]}
+o dominio(lista de objetos da classe ElementoDominio) como valor, e.g. {Var1 : [ValorDom1, ValorDom2, ValorDom3], Var2:[ValorDom4, ValorDom5, ValorDom6]}
 ->restricoes: lista com as restricoes(objetos da classe Restricao)
 
 return: lista de variaveis com novos dominios 
 '''
 def GAC(TDA):
-	arcosUsados = []
+	arcosUsados = set()
 	while len(TDA) != 0:
 		arco = TDA.pop()
 		print 'Vez do arco:'
@@ -39,27 +39,31 @@ def GAC(TDA):
 		print ''
 		novoDominio = []
 		if len(restricao.escopo) == 1: #restricao unaria
-			novoDominio = [ valorDominio for valorDominio in dominio if restricao.funcaorestricao(valorDominio)]
+			novoDominio = [ elementoDominio for elementoDominio in dominio if restricao.funcaorestricao(elementoDominio)]
 		elif len(restricao.escopo) == 2: #restricao binaria
 			outraVariavel = [ variavelEscopo for variavelEscopo in restricao.escopo if variavelEscopo != variavel ][0] #pega a outra variavel do escopo
 			print 'outraVariavel = ' + str(outraVariavel)
 			outroDominio = outraVariavel.dominio
-			#novoDominio = [ valorDominio for valorDominio in dominio for valorOutroDominio in itertools.takewhile(outroDominio) if restricao.chamafuncaorestricao([valorDominio, valorOutroDominio]) ]
+			#novoDominio = [ elementoDominio for elementoDominio in dominio for elementoOutroDominio in itertools.takewhile(outroDominio) if restricao.chamafuncaorestricao([elementoDominio, elementoOutroDominio]) ]
 
-			for valorDominio in dominio:
-				for valorOutroDominio in outroDominio:
-					if restricao.chamafuncaorestricao([valorDominio, valorOutroDominio]):
-						novoDominio.append(valorDominio)
+			for elementoDominio in dominio:
+				for elementoOutroDominio in outroDominio:
+					if restricao.chamafuncaorestricao([elementoDominio, elementoOutroDominio]):
+						novoDominio.append(elementoDominio)
 						break
 
 		print 'Novo Dominio de ' + str(variavel) + ':'
 		print str(novoDominio)
 		print ''
 		if novoDominio != dominio:
-			arcosVoltantes = [ arcoUsado for arcoUsado in arcosUsados if arcoUsado[1].pertenceEscopo(variavel) and arcoUsado[1] != restricao and arcoUsado[0] != variavel ]
-			TDA.extend(arcosVoltantes)
-			arcosUsados = [ arcoUsado for arcoUsado in arcosUsados if arcoUsado not in arcosVoltantes ]#remove os arcos voltantes dos arcosUsados
+			arcosVoltantes = { arcoUsado for arcoUsado in arcosUsados if arcoUsado[1].pertenceEscopo(variavel) and arcoUsado[1] != restricao and arcoUsado[0] != variavel }
+			TDA |= arcosVoltantes
+			arcosUsados -= arcosVoltantes#remove os arcos voltantes dos arcosUsados
 
 		variavel.dominio = novoDominio
-		arcosUsados.append(arco)
-	return [ variavelArco for variavelArco, restricaoArco in arcosUsados ]
+		arcosUsados.add(arco)
+		print 'Arcos Usados: \n'
+		print sorted(list(arcosUsados), key=lambda a: a[0].nome)
+		print ''
+
+	return { variavelArco for variavelArco, restricaoArco in arcosUsados}

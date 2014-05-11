@@ -114,7 +114,7 @@ TDA = geraTDA([A, B, C, D, E], [restricaoAdiferenteB, restricaoAigualD, restrica
 print ''
 print 'TDA:'
 print ''
-for arco in TDA:
+for arco in sorted(list(TDA), key=lambda a: a[0].nome):
 	print 'Arco=' + str(arco)
 
 print ''

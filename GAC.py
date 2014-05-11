@@ -12,7 +12,7 @@ return TDA: lista de tuplas com variavel(objeto da classe Variavel) e restricao(
 Restricao)
 '''
 def geraTDA(variaveis, restricoes):
-	return [(variavel, restricao) for variavel in variaveis for restricao in restricoes if restricao.pertenceEscopo(variavel)]
+	return {(variavel, restricao) for variavel in variaveis for restricao in restricoes if restricao.pertenceEscopo(variavel)}
 
 
 '''
@@ -25,7 +25,7 @@ o dominio(lista de objetos da classe ElementoDominio) como valor, e.g. {Var1 : [
 return: lista de variaveis com novos dominios 
 '''
 def GAC(TDA):
-	arcosUsados = []
+	arcosUsados = set()
 	while len(TDA) != 0:
 		arco = TDA.pop()
 		variavel = arco[0]
@@ -44,10 +44,10 @@ def GAC(TDA):
 						break
 
 		if novoDominio != dominio:
-			arcosVoltantes = [ arcoUsado for arcoUsado in arcosUsados if arcoUsado[1].pertenceEscopo(variavel) and arcoUsado[1] != restricao and arcoUsado[0] != variavel ]
-			TDA.extend(arcosVoltantes)
-			arcosUsados = [ arcoUsado for arcoUsado in arcosUsados if arcoUsado not in arcosVoltantes ]#remove os arcos voltantes dos arcosUsados
+			arcosVoltantes = { arcoUsado for arcoUsado in arcosUsados if arcoUsado[1].pertenceEscopo(variavel) and arcoUsado[1] != restricao and arcoUsado[0] != variavel }
+			TDA |= arcosVoltantes
+			arcosUsados -= arcosVoltantes#remove os arcos voltantes dos arcosUsados
 
 		variavel.dominio = novoDominio
-		arcosUsados.append(arco)
-	return [ variavelArco for variavelArco, restricaoArco in arcosUsados ]
+		arcosUsados.add(arco)
+	return { variavelArco for variavelArco, restricaoArco in arcosUsados }
