@@ -9,42 +9,62 @@ valoresAtributosPattern  = re.compile(r'^%%VALORES')
 dominiosPattern          = re.compile(r'^@DOMINIOS')
 restricoesPattern        = re.compile(r'@RESTRICOES')
 
+def proximalinha(g, errormsg):
+	try:
+		return g.next()
+	except StopIteration:
+		raise EOFError(errormsg)
+
 def parseArcoConsistencia(fo):
 	atributosVariaveis = []
 	valoresAtributosVariaveis = []
 
 	#remove as linhas em branco e comentarios
 	linhas = (l for l in fo if not commentPattern.match(l) and not whitespacePattern.match(l))
-	linha = linhas.next()
+	linha = proximalinha(linhas, 'ERRO!! @VARIAVEIS: secao nao encontrada')
 	if not variaveisPattern.match(linha):
 		raise ValueError('ERRO!! @VARIAVEIS: secao nao encontrada ')
-	linha = linhas.next()
+	linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado. %ATRIBUTOS: subsecao nao encontrada na secao @VARIAVEIS')
 	if not atributosPattern.match(linha):
 		raise ValueError('ERRO!! %ATRIBUTOS: subsecao nao encontrada')
 
-	linha = linhas.next()
+	linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado na subsecao %ATRIBUTOS da secao @VARIAVEIS')
 	while not valoresAtributosPattern.match(linha):
 		atributosVariaveis.append(linha[:-1])
-		linha = linhas.next()
+		linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado na subsecao %ATRIBUTOS da secao @VARIAVEIS')
 
-	linha = linhas.next()
+	linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado na subsecao %%VALORES da secao @VARIAVEIS')
 	while not dominiosPattern.match(linha):
 		valoresAtributosVariaveis.append(linha[:-1])
-		linha = linhas.next()
+		linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado na subsecao %%VALORES da secao @VARIAVEIS')
 
 	atributosDominios = []
 	valoresAtributosDominios = []
-	linha = linhas.next()
+	linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado %ATRIBUTOS: subsecao nao encontrada')
 	if not atributosPattern.match(linha):
 		raise ValueError('ERRO!! %ATRIBUTOS: subsecao nao encontrada')
 
-	linha = linhas.next()
+	linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado na subsecao %ATRIBUTOS da secao @DOMINIOS')
 	while not valoresAtributosPattern.match(linha):
 		atributosDominios.append(linha[:-1])
-		linha = linhas.next()
+		linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado na subsecao %ATRIBUTOS da secao @DOMINIOS')
 
-	linha = linhas.next()
+	linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado na subsecao %%VALORES da secao @DOMINIOS')
 	while not restricoesPattern.match(linha):
 		valoresAtributosDominios.append(linha[:-1])
-		linha = linhas.next()
-	return atributosVariaveis, valoresAtributosVariaveis, atributosDominios, valoresAtributosDominios
+		linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado na subsecao %%VALORES da secao @DOMINIOS')
+
+
+	linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado na secao @RESTRICOES!! O nome do modulo das restricoes nao foi declarado')
+	modulorestricoes = linha[:-1]
+	linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado. Faltam restricoes na secao @RESTRICOES!!')
+	restricoes = []
+	while True:
+		escopo = linha[:-1]
+		funcrestricao = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado. Restricao com escopo = (' + escopo + ') nao possui funcao da restricao ')
+		restricoes.append((escopo, funcrestricao[:-1]))
+		try:
+			linha = linhas.next()
+		except StopIteration:
+			break
+	return atributosVariaveis, valoresAtributosVariaveis, atributosDominios, valoresAtributosDominios, modulorestricoes, restricoes
