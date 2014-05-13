@@ -3,21 +3,41 @@
 %ATRIBUTOS
 
 // NOME DOS ATRIBUTOS SEPARADOS POR VIRGULA
-// dia,horario
+dia,horario
 
 %%VALORES
 
 // VALORES PARA OS ATRIBUTOS DECLARADOS NA ORDEM EM QUE OS NOMES DOS ATRIBUTOS FORAM DECLARADOS
 // ID EH O ATRIBUTO OBRIGATORIO USADO PARA IDENTIFICAR A VARIAVEL EM QUESTAO
 // CADA LINHA REPRESENTA UMA VARIAVEL DIFERENTE COM SEUS ATRIBUTOS
-// id=Laboratorio1,terca,8-10
-// segunda,15-id=Laboratorio2
+id=Laboratorio1,terca,8-10
+id=Laboratorio2,segunda,15-17
 
 @DOMINIOS
 
 %ATRIBUTOS
 
 //NOME DOS ATRIBUTOS SEPARADOS POR VIRGULA
-//nome,dias,horarios
+nome,dias,horarios
 
 %%VALORES
+// VALORES PARA OS ATRIBUTOS DECLARADOS NA ORDEM EM QUE OS NOMES DOS ATRIBUTOS FORAM DECLARADOS
+// ID EH O ATRIBUTO OBRIGATORIO USADO PARA IDENTIFICAR O ELEMENTO DE DOMINIO EM QUESTAO
+// CADA LINHA REPRESENTA UM ELEMENTO DE DOMINIO DIFERENTE COM SEUS ATRIBUTOS
+id=Monitor1,Joao,[terca,quinta],[8-10, 9-10]
+id=Monitor2,Luis,[segunda],[15-17]
+
+@RESTRICOES
+
+//nome do modulo python onde estao as funcoes de restricao
+restricaoLaboratorioMonitor.py
+
+//Variaveis envolvidas nas restricoes seguidos do nome da funcao que executa a restricao. Em linhas diferentes respectivamente
+Laboratorio1,Laboratorio2
+funcaoRestricaoLaboratorio1Laboratorio2
+
+Laboratorio1
+funcaoRestricaoLaboratorio1
+
+Laboratorio2
+funcaoRestricaoLaboratorio2
