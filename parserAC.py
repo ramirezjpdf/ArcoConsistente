@@ -8,6 +8,8 @@ linhaAtributoPattern     = re.compile(r'([^,]+,)+')
 valoresAtributosPattern  = re.compile(r'^%%VALORES')
 dominiosPattern          = re.compile(r'^@DOMINIOS')
 restricoesPattern        = re.compile(r'@RESTRICOES')
+idPattern                = re.compile(r'^id=[\d\w_]+')
+valoresSplitPattern      = re.compile(r',(?![^\[\]]*\])')
 
 def proximalinha(g, errormsg):
 	try:
@@ -23,42 +25,48 @@ def parseArcoConsistencia(fo):
 		raise ValueError('ERRO!! @VARIAVEIS: secao nao encontrada ')
 	linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado. %ATRIBUTOS: subsecao nao encontrada na secao @VARIAVEIS')
 	if not atributosPattern.match(linha):
-		raise ValueError('ERRO!! %ATRIBUTOS: subsecao nao encontrada')
+		raise ValueError('ERRO!! %ATRIBUTOS: subsecao nao encontrada na secao @VARIAVEIS')
 
-	atributosVariaveis = []
+	atributosVariaveis = ['id']
 	valoresAtributosVariaveis = []
 
 	linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado na subsecao %ATRIBUTOS da secao @VARIAVEIS')
-	while not valoresAtributosPattern.match(linha):
-		atributosVariaveis.append(linha[:-1])
-		linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado na subsecao %ATRIBUTOS da secao @VARIAVEIS. Subsecao %%VALORES nao encontrada')
-	if not atributosVariaveis:
-		raise ValueError('ERRO!! Nenhum atributo para as variaveis foi declarado')
+	atributosVariaveis.extend(linha[:-1].split(','))
+	linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado na subsecao $ATRIBUTOS. %%VALORES: subsecao nao encontrada na secao @VARIAVEIS')
+	if not valoresAtributosPattern.match(linha):
+		raise ValueError('ERRO!! %%VALORES: subsecao nao encontrada na secao @VARIAVEIS ou os atributos da subsecao #ATRIBUTOS nao foram declarados')
 
 	linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado na subsecao %%VALORES da secao @VARIAVEIS')
 	while not dominiosPattern.match(linha):
-		valoresAtributosVariaveis.append(linha[:-1])
+		valores = valoresSplitPattern.split(linha[:-1])
+		if not idPattern.match(valores[0]):
+			raise ValueError('ERRO!! Para a linha: < ' + linha[:-1] + ' >. Nao foi encontrado atributo id')
+		valores[0] = re.sub('^id=', '', valores[0])
+		valoresAtributosVariaveis.append(valores)
 		linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado na subsecao %%VALORES da secao @VARIAVEIS. Secao @DOMINIOS nao encontrada')
 	if not valoresAtributosVariaveis:
 		raise ValueError('ERRO!! Nenhum valor para os atributos das variaveis foi declarado')
 
-	atributosDominios = []
+	atributosDominios = ['id']
 	valoresAtributosDominios = []
 
-	linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado %ATRIBUTOS: subsecao nao encontrada')
+	linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado %ATRIBUTOS: subsecao nao encontrada na secao @DOMINIOS')
 	if not atributosPattern.match(linha):
-		raise ValueError('ERRO!! %ATRIBUTOS: subsecao nao encontrada')
+		raise ValueError('ERRO!! %ATRIBUTOS: subsecao nao encontrada na secao @DOMINIOS')
 
 	linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado na subsecao %ATRIBUTOS da secao @DOMINIOS')
-	while not valoresAtributosPattern.match(linha):
-		atributosDominios.append(linha[:-1])
-		linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado na subsecao %ATRIBUTOS da secao @DOMINIOS. Subsecao ##VALORES nao encontrada')
-	if not atributosDominios:
-		raise ValueError('ERRO!! Nenhum valor para os atributos dos dominios foi declarado')
+	atributosDominios.extend(linha[:-1].split(','))
+	linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado na subsecao %ATRIBUTOS da secao @DOMINIOS. Subsecao ##VALORES nao encontrada')
+	if not valoresAtributosPattern.match(linha):
+		raise ValueError('ERRO!! %%VALORES: subsecao nao encontrada na secao @DOMINIOSou os atributos da subsecao #ATRIBUTOS nao foram declarados')
 
 	linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado na subsecao %%VALORES da secao @DOMINIOS')
 	while not restricoesPattern.match(linha):
-		valoresAtributosDominios.append(linha[:-1])
+		valores = valoresSplitPattern.split(linha[:-1])
+		if not idPattern.match(valores[0]):
+			raise ValueError('ERRO!! Para a linha: < ' + linha[:-1] + ' >. Nao foi encontrado atributo id')
+		valores[0] = re.sub('^id=', '', valores[0])
+		valoresAtributosDominios.append(valores)
 		linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado na subsecao %%VALORES da secao @DOMINIOS. Secao @RESTRICOES nao encontrada')
 	if not valoresAtributosDominios:
 		raise ValueError('ERRO!! Nenhum valor para os atributos dos dominios foi declarado')
