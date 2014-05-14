@@ -31,7 +31,7 @@ def parseArcoConsistencia(fo):
 	if not atributosPattern.match(linha):
 		raise ValueError('ERRO!! %ATRIBUTOS: subsecao nao encontrada na secao @VARIAVEIS')
 
-	atributosVariaveis = ['id']
+	atributosVariaveis = []
 	valoresAtributosVariaveis = []
 
 	linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado na subsecao %ATRIBUTOS da secao @VARIAVEIS')
@@ -51,7 +51,7 @@ def parseArcoConsistencia(fo):
 	if not valoresAtributosVariaveis:
 		raise ValueError('ERRO!! Nenhum valor para os atributos das variaveis foi declarado')
 
-	atributosDominios = ['id']
+	atributosDominios = []
 	valoresAtributosDominios = []
 
 	linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado %ATRIBUTOS: subsecao nao encontrada na secao @DOMINIOS')

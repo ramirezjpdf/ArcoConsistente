@@ -1,6 +1,6 @@
 class ElementoDominio(object):
-	def __init__(self,id,variavel,**kwargs):
-		self.id = id
+	def __init__(self,elementoId,variavel,**kwargs):
+		self.elementoId = elementoId
 		self.variavel = variavel
 		self.__dict__.update(kwargs)
 
