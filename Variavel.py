@@ -1,5 +1,6 @@
 class Variavel(object):
-	def __init__(self, ordem, **kwargs):
+	def __init__(self, id, ordem, **kwargs):
+		self.id = id
 		self.ordem = ordem
 		self.dominio = []
 		self.__dict__.update(kwargs)
