@@ -1,4 +1,7 @@
 import re
+from Variavel import *
+from ElementoDominio import *
+from Restricao import *
 
 whitespacePattern        = re.compile(r'^[\s\n]+$')
 commentPattern           = re.compile(r'^//')
@@ -7,9 +10,10 @@ atributosPattern         = re.compile(r'^%ATRIBUTOS')
 linhaAtributoPattern     = re.compile(r'([^,]+,)+')
 valoresAtributosPattern  = re.compile(r'^%%VALORES')
 dominiosPattern          = re.compile(r'^@DOMINIOS')
+atribuicaoPattern        = re.compile(r'^@ATRIBUICAO')
 restricoesPattern        = re.compile(r'@RESTRICOES')
 idPattern                = re.compile(r'^id=[\d\w_]+')
-valoresSplitPattern      = re.compile(r',(?![^\[\]]*\])')
+valoresSplitPattern      = re.compile(r',(?![^\[\]]*\])') #separa uma linha de valores pelas virgulas menos as linhas que estao dentro de listas
 
 def proximalinha(g, errormsg):
 	try:
@@ -61,15 +65,25 @@ def parseArcoConsistencia(fo):
 		raise ValueError('ERRO!! %%VALORES: subsecao nao encontrada na secao @DOMINIOSou os atributos da subsecao #ATRIBUTOS nao foram declarados')
 
 	linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado na subsecao %%VALORES da secao @DOMINIOS')
-	while not restricoesPattern.match(linha):
+	while not atribuicaoPattern.match(linha):
 		valores = valoresSplitPattern.split(linha[:-1])
 		if not idPattern.match(valores[0]):
 			raise ValueError('ERRO!! Para a linha: < ' + linha[:-1] + ' >. Nao foi encontrado atributo id')
 		valores[0] = re.sub('^id=', '', valores[0])
 		valoresAtributosDominios.append(valores)
-		linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado na subsecao %%VALORES da secao @DOMINIOS. Secao @RESTRICOES nao encontrada')
+		linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado na subsecao %%VALORES da secao @DOMINIOS. Secao @ATRIBUICAO nao encontrada')
 	if not valoresAtributosDominios:
 		raise ValueError('ERRO!! Nenhum valor para os atributos dos dominios foi declarado')
+
+	atribuicaoDict = {}
+
+	linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado secao @ATRIBUICAO')
+	while not restricoesPattern.match(linha):
+		atribuicao = linha[:-1].split('=')
+		atribuicaoDict[atribuicao[0]] = re.sub(r'[\{\}]', '', atribuicao[1]).split(',')
+		linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado na secao @ATRIBUICAO')
+	if not atribuicaoDict:
+		raise ValueError('ERRO!! Nenhuma atribuicao entre variaveis e dominios encontrada')
 
 	linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado na secao @RESTRICOES!! O nome do modulo das restricoes nao foi declarado')
 	modulorestricoes = linha[:-1]
@@ -83,4 +97,16 @@ def parseArcoConsistencia(fo):
 			linha = linhas.next()
 		except StopIteration:
 			break
-	return atributosVariaveis, valoresAtributosVariaveis, atributosDominios, valoresAtributosDominios, modulorestricoes, restricoes
+	return atributosVariaveis, valoresAtributosVariaveis, atributosDominios, valoresAtributosDominios, atribuicaoDict, modulorestricoes, restricoes
+
+def preparaVariaveis(atributos, valores):
+	listPattern              = re.compile(r'^[.* ]$')
+	stringToListSplitPattern = re.compile(r'[\[,\]]')
+	lista = []
+	for i, valor in enumerate(valores):
+		valor = [stringToListSplitPattern.split(v)[1:-1] if listPattern.match(v) else v for v in valor ] #transforma a string  '[a,b,c]' na lista ['a','b','c']
+		variavelId = valor[0]
+		atributosDict = dict(zip(atributos, valor[1:]))
+		variavel = Variavel(variavelId, i, **atributosDict)
+		lista.append(variavel)
+	return lista

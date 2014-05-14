@@ -27,6 +27,13 @@ nome,dias,horarios
 id=Monitor1,Joao,[terca,quinta],[8-10, 9-10]
 id=Monitor2,Luis,[segunda],[15-17]
 
+
+@ATRIBUICAO
+// atribuicao do dominio das variaveis. Feito atraves do id das variaveis e monitores
+
+Laboratorio1={Monitor1,Monitor2}
+Laboratorio2={Monitor1,Monitor2}
+
 @RESTRICOES
 
 //nome do modulo python onde estao as funcoes de restricao
