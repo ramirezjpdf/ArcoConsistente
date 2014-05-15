@@ -94,8 +94,8 @@ def parseArcoConsistencia(fo):
 	restricoes = []
 	while True:
 		escopo = linha[:-1].split(',')
-		funcrestricao = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado. Restricao com escopo = (' + escopo + ') nao possui funcao da restricao ')
-		restricoes.append((escopo, funcrestricao[:-1]))
+		funcrestricao = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado. Restricao com escopo = (' + str(escopo) + ') nao possui funcao da restricao ')
+		restricoes.append((escopo, funcrestricao.replace('\n','')))
 		try:
 			linha = linhas.next()
 		except StopIteration:
@@ -111,11 +111,12 @@ def preparaAtribuicao(atributos, valores, nomeClasse):
 		valor = [stringToListSplitPattern.split(v)[1:-1] if listPattern.match(v) else v for v in valor ] #transforma a string  '[a,b,c]' na lista ['a','b','c']
 		objId = valor[0]
 		atributosDict = dict(zip(atributos, valor[1:]))
+		obj = None
 		if nomeClasse == 'Variavel':
 			obj = initmethod(objId, i, **atributosDict)
 		elif nomeClasse == 'ElementoDominio':
 			obj = initmethod(objId,**atributosDict)
-		lista.append(variavel)
+		lista.append(obj)
 	return lista
 
 def constroiDominios(variaveis, elementosDominios, atribuicaoDict):
@@ -131,5 +132,15 @@ def constroiRestricoes(variaveis, modulorestricoes, tuplasrestricoes):
 	mod = None
 	try:
 		mod = __import__(os.path.basename(modulorestricoes).replace('.py', ''))
-	except:
+	except ImportError:
 		raise ValueError('ERRO!! Modulo com as funcoes de restricao nao encontrado')
+	restricoes = []
+	for escopoStr, nomefuncaorestricao in tuplasrestricoes:
+		funcaorestricao  = None
+		try:
+			funcaorestricao = getattr(mod, nomefuncaorestricao)
+		except AttributeError:
+			raise ValueError('ERRO!! Funcao de restricao com nome: ' + nomefuncaorestricao + ' nao esta presente no modulo: ' + mod.__name__ + '.')
+		escopo = { variavel for variavel in variaveis if variavel.variavelId in escopoStr }
+		restricoes.append(Restricao(escopo, funcaorestricao))
+	return restricoes

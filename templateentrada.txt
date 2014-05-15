@@ -37,7 +37,7 @@ Laboratorio2={Monitor1,Monitor2}
 @RESTRICOES
 
 //nome completo do modulo python onde estao as funcoes de restricao
-C:\Users\Exemplo\restricaoLaboratorioMonitor.py
+//C:\Users\Exemplo\restricaoLaboratorioMonitor.py
 
 //Variaveis envolvidas nas restricoes seguidos do nome da funcao que executa a restricao. Em linhas diferentes respectivamente
 Laboratorio1,Laboratorio2
