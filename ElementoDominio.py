@@ -1,5 +1,5 @@
 class ElementoDominio(object):
-	def __init__(self,elementoId,variavel,**kwargs):
+	def __init__(self,elementoId,variavel=None,**kwargs):
 		self.elementoId = elementoId
 		self.variavel = variavel
 		self.__dict__.update(kwargs)
