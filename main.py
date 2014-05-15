@@ -8,6 +8,7 @@ from GAC      import GAC
 
 if __name__ == '__main__':
 	pathEntrada = sys.argv[1]
+	pathSaida   = sys.argv[2]
 	with open(pathEntrada) as fo:
 		av, vav, ad, vad, atribuicaoDict, mr, tuplasrestricoes = parseArcoConsistencia(fo)
 		variaveis = preparaAtribuicao(av, vav, 'Variavel')
@@ -45,3 +46,8 @@ if __name__ == '__main__':
 		for var in variaveisNovosDominios:
 			print 'Dominio de ' + str(var)
 			print var.dominio
+
+		with open(pathSaida, 'w') as fs:
+			for var in variaveisNovosDominios:
+				fs.write('Dominio de ' + str(var) + '\n')
+				fs.write(str(var.dominio) + '\n\n')
