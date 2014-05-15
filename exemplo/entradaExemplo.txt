@@ -1,0 +1,77 @@
+@VARIAVEIS
+
+%ATRIBUTOS
+
+// NOME DOS ATRIBUTOS SEPARADOS POR VIRGULA
+nome
+
+%%VALORES
+
+// VALORES PARA OS ATRIBUTOS DECLARADOS NA ORDEM EM QUE OS NOMES DOS ATRIBUTOS FORAM DECLARADOS
+// ID EH O ATRIBUTO OBRIGATORIO USADO PARA IDENTIFICAR A VARIAVEL EM QUESTAO
+// CADA LINHA REPRESENTA UMA VARIAVEL DIFERENTE COM SEUS ATRIBUTOS
+id=A,A
+id=B,B
+id=C,C
+id=D,D
+id=E,E
+
+@DOMINIOS
+
+%ATRIBUTOS
+
+//NOME DOS ATRIBUTOS SEPARADOS POR VIRGULA
+valor
+
+%%VALORES
+// VALORES PARA OS ATRIBUTOS DECLARADOS NA ORDEM EM QUE OS NOMES DOS ATRIBUTOS FORAM DECLARADOS
+// ID EH O ATRIBUTO OBRIGATORIO USADO PARA IDENTIFICAR O ELEMENTO DE DOMINIO EM QUESTAO
+// CADA LINHA REPRESENTA UM ELEMENTO DE DOMINIO DIFERENTE COM SEUS ATRIBUTOS
+id=1,1
+id=2,2
+id=3,3
+id=4,4
+id=5,5
+
+
+@ATRIBUICAO
+// atribuicao do dominio das variaveis. Feito atraves do id das variaveis e monitores
+
+A={1,2,3,4}
+B={1,2,4}
+C={1,3,4}
+D={1,2,3,4}
+E={1,2,3,4}
+
+@RESTRICOES
+
+//nome completo do modulo python onde estao as funcoes de restricao
+// NOME COMPLETO DO ARQUIVO restricoesExemplo.py
+
+//Variaveis envolvidas nas restricoes seguidos do nome da funcao que executa a restricao. Em linhas diferentes respectivamente
+A,B
+funcRestricaoAdiferenteB
+
+A,D
+funcRestricaoAigualD
+
+A,E
+funcRestricaoEmenorA
+
+B,D
+funcRestricaoBdiferenteD
+
+B,C
+funcRestricaoBdiferenteC
+
+B,E
+funcRestricaoEmenorB
+
+C,D
+funcRestricaoCmenorD
+
+C,E
+funcRestricaoEmenorC
+
+D,E
+funcRestricaoEmenorD
