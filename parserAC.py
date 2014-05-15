@@ -1,4 +1,7 @@
 import re
+import sys
+import copy
+import os.path
 from Variavel import *
 from ElementoDominio import *
 from Restricao import *
@@ -90,7 +93,7 @@ def parseArcoConsistencia(fo):
 	linha = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado. Faltam restricoes na secao @RESTRICOES!!')
 	restricoes = []
 	while True:
-		escopo = linha[:-1]
+		escopo = linha[:-1].split(',')
 		funcrestricao = proximalinha(linhas, 'ERRO!! Fim de arquivo inesperado. Restricao com escopo = (' + escopo + ') nao possui funcao da restricao ')
 		restricoes.append((escopo, funcrestricao[:-1]))
 		try:
@@ -99,14 +102,34 @@ def parseArcoConsistencia(fo):
 			break
 	return atributosVariaveis, valoresAtributosVariaveis, atributosDominios, valoresAtributosDominios, atribuicaoDict, modulorestricoes, restricoes
 
-def preparaVariaveis(atributos, valores):
+def preparaAtribuicao(atributos, valores, nomeClasse):
 	listPattern              = re.compile(r'^[.* ]$')
 	stringToListSplitPattern = re.compile(r'[\[,\]]')
 	lista = []
+	initmethod = getattr(__import__(nomeClasse), nomeClasse)
 	for i, valor in enumerate(valores):
 		valor = [stringToListSplitPattern.split(v)[1:-1] if listPattern.match(v) else v for v in valor ] #transforma a string  '[a,b,c]' na lista ['a','b','c']
-		variavelId = valor[0]
+		objId = valor[0]
 		atributosDict = dict(zip(atributos, valor[1:]))
-		variavel = Variavel(variavelId, i, **atributosDict)
+		if nomeClasse == 'Variavel':
+			obj = initmethod(objId, i, **atributosDict)
+		elif nomeClasse == 'ElementoDominio':
+			obj = initmethod(objId,**atributosDict)
 		lista.append(variavel)
 	return lista
+
+def constroiDominios(variaveis, elementosDominios, atribuicaoDict):
+	for variavel in variaveis:
+		for elementoDominio in elementosDominios:
+			if elementoDominio.elementoId in atribuicaoDict[variavel.variavelId]:
+				copiaElementoDominio = copy.deepcopy(elementoDominio)
+				copiaElementoDominio.variavel = variavel
+				variavel.dominio.append(copiaElementoDominio)
+
+def constroiRestricoes(variaveis, modulorestricoes, tuplasrestricoes):
+	sys.path.append(os.path.dirname(modulorestricoes))
+	mod = None
+	try:
+		mod = __import__(os.path.basename(modulorestricoes).replace('.py', ''))
+	except:
+		raise ValueError('ERRO!! Modulo com as funcoes de restricao nao encontrado')
