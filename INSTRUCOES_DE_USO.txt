@@ -1,0 +1,56 @@
+INSTRUÇÕES DE USO
+
+	REQUISITOS
+É necessário possuir o interpretador python instalado na máquina
+
+	COMO RODAR
+Para rodar o programa, execute, na linha de comando, o seguinte: 
+
+python main.py "caminho completo até o arquivo de entrada" "caminho completo para o arquivo de saida"
+
+assumindo que esteja no dirétório que contém o arquivo main.py.
+
+	INFORMAÇÕES ADICIONAIS
+		Restrições
+As restrições devem ser feitas pelo usuário e todas elas são funções escritas na linguagem python como exemplificado em 
+exemplo/restricoesexemplo.py. O caminho completo até esse arquivo deve ser declarado no arquivo de entrada em um lugar específico
+que é a primeira da seção @RESTRICOES. Vide templateentrada.txt e exemplo/entradaExemplo.txt.
+NÃO EXISTEM RESTRIÇÕES DEFAULT.
+Exemplo de função de restrição:
+
+def funcRestricaoEmenorB(elementoDominioB, elementoDominioE):
+	return int(elementoDominioE.valor) < int(elementoDominioB.valor)
+
+Ainda sobre as funções de restrição, no momento em que elas são chamadas, a passagem de argumentos segue uma ordem especifica sempre.
+Essa ordem é dada pela sequência de entradas das variáveis do problema no arquivo de entrada na subseção ##VALORES da seção
+@VARIAVEIS como exemplificado a seguir.
+
+Sendo a subseção ##VALORES da seção @VARIAVEIS como a que segue:
+
+%%VALORES
+id=A,A
+id=B,B
+id=C,C
+id=D,D
+id=E,E
+
+a ordem dessas variáveis é A,B,C,D,E.
+Assim, se a função de restrição binária for entre C e E, o primeiro argumento da função de restrição deve ser aquele
+que receberá um elemento do domínio da variável C e o segundo argumento da função de restrição deve ser aquele
+que receberá um elemento do domínio da variável E, como exemplificado em
+
+def funcRestricaoEmenorB(elementoDominioB, elementoDominioE):
+	return int(elementoDominioE.valor) < int(elementoDominioB.valor)
+
+se a função de restrição binária for entre D e B, o primeiro argumento da função de restrição deve ser aquele
+que receberá um elemento do domínio da variável B e o segundo argumento da função de restrição deve ser aquele
+que receberá um elemento do domínio da variável D, como exemplificado em
+
+def funcRestricaoBdiferenteD(elementoDominioB, elementoDominioD):
+	return elementoDominioB.valor != elementoDominioD.valor
+
+ARQUIVO DE ENTRADA
+Informações de como deve ser o arquivo de entrada estão presentes em templateentrada.txt e
+exemplo/entradaExemplo.txt na forma de cometários.
+
+
